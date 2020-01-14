@@ -1,29 +1,23 @@
-import { usersRouter } from "./users.router"
+import * as mongoose from 'mongoose'
 
-const users = [
-    {
-        id: 1,
-        name: 'Peter Parker',
-        email: 'pp@marvel.com'
-    },
-    {
-        id: 2,
-        name: 'Peter Quill',
-        email: 'starlord@marvel.com'
-    }
-]
-
-export class User {
-    findAll() {
-        return users
-    }
-
-    findById(id) {
-        const filtered = users.filter(user => user.id == id)
-        let user
-        if (filtered.length > 0) {
-            user = filtered[0]
-        }
-        return user
-    }
+export interface User extends mongoose.Document {
+    name: String
+    email: String
+    password: String
 }
+
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String
+    },
+    email: {
+        type: String,
+        unique: true
+    },
+    password: {
+        type: String,
+        select: false
+    }
+})
+
+export const User = mongoose.model<User>('User', userSchema)
