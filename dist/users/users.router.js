@@ -1,47 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const router_1 = require("../common/router");
 const users_model_1 = require("./users.model");
-class UsersRouter extends router_1.Router {
+const model_router_1 = require("../common/model-router");
+class UsersRouter extends model_router_1.ModelRouter {
+    constructor() {
+        super(users_model_1.User);
+    }
     applyRoutes(application) {
-        application.get('/users', (req, res, next) => {
-            users_model_1.User.find().then(users => {
-                res.json(users);
-                return next();
-            });
-        });
-        application.get('/users/:id', (req, res, next) => {
-            users_model_1.User.findById(req.params.id).then(users => {
-                if (users) {
-                    res.json(users);
-                    return next();
-                }
-                res.send(404);
-                return next();
-            });
-        });
-        application.post('/users', (req, res, next) => {
-            let user = new users_model_1.User(req.body);
-            user.save().then(user => {
-                user.password = undefined;
-                res.json(user);
-                return next();
-            });
-        });
-        application.put('/users/:id', (req, res, next) => {
-            const options = { overwrite: true };
-            const id = req.params.id;
-            users_model_1.User.update({ _id: id }, req.body, options).exec().then(result => {
-                if (result.n) {
-                    return users_model_1.User.findById(id);
+        application.get('/users', this.findAll);
+        application.get('/users/:id', [this.validateId, this.findById]);
+        application.post('/users', [this.save]);
+        application.put('/users/:id', [this.validateId, this.update]);
+        application.del('/users/:id', [this.validateId, this.delete]);
+        //usar se necessario
+        application.patch('/users/id:', (req, res, next) => {
+            const options = { new: true };
+            users_model_1.User.findByIdAndUpdate(req.params.id, req.body, options).then(user => {
+                if (user) {
+                    res.json(user);
                 }
                 else {
-                    return res.send(404);
+                    res.send(404);
                 }
-            }).then(user => {
-                res.json(user);
                 return next();
-            });
+            }).catch(next);
         });
     }
 }

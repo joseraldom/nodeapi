@@ -1,51 +1,36 @@
 import * as restify from 'restify'
 import { Router } from "../common/router";
-import { User, userSchema } from './users.model';
+import { User } from './users.model';
+import { NotFoundError } from 'restify-errors';
+import { ModelRouter } from '../common/model-router';
 
-class UsersRouter extends Router {
+class UsersRouter extends ModelRouter<User> {
+    
+    constructor() {
+        super(User)
+    }
+    
     applyRoutes(application: restify.Server) {
         
-        application.get('/users', (req, res, next) => {
-            User.find().then(users => {
-                res.json(users)
-                return next()
-            })
-        })
+        application.get('/users', this.findAll)
+        application.get('/users/:id', [this.validateId, this.findById])
+        application.post('/users', [this.save])
+        application.put('/users/:id', [this.validateId, this.update])
+        application.del('/users/:id', [this.validateId, this.delete])
 
-        application.get('/users/:id', (req, res, next) => {
-            User.findById(req.params.id).then(users => {
-                if (users) {
-                    res.json(users)
-                    return next()
-                }
-                res.send(404)
-                return next()
-            })
-        })
-
-        application.post('/users', (req, res, next) => {
-            let user = new User(req.body)
-            user.save().then(user => {
-                user.password = undefined
-                res.json(user)
-                return next()
-            })
-        })
-
-        application.put('/users/:id', (req, res, next) => {
-            const options = {overwrite: true}
-            const id = req.params.id
-            User.update({_id: id}, req.body, options).exec().then(result => {
-                if (result.n) {
-                    return User.findById(id)
+        //usar se necessario
+        application.patch('/users/id:', (req, res, next) => {
+            const options = { new: true }
+            User.findByIdAndUpdate(req.params.id, req.body, options).then(user => {
+                if(user) {
+                    res.json(user)
                 } else {
-                    return res.send(404)
+                    res.send(404)
                 }
-            }).then(user => {
-                res.json(user)
                 return next()
-            })
+            }).catch(next)
         })
+
     }
 }
 
