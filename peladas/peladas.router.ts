@@ -1,6 +1,6 @@
 import * as restify from 'restify'
 import { ModelRouter } from "../common/model-router";
-import { Pelada } from "./pelada.model";
+import { Pelada } from "./peladas.model";
 
 class PeladaRouter extends ModelRouter<Pelada> {
     

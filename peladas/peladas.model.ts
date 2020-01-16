@@ -1,24 +1,10 @@
 import * as mongoose from "mongoose";
-
-export interface Peladeiro extends mongoose.Document {
-    nome: String
-    posicao: String
-}
+import { Peladeiro } from "../peladeiros/peladeiros.model"
 
 export interface Pelada extends mongoose.Document {
     nome: String
     peladeiros: Peladeiro[]
 }
-
-const peladeiroSchema = new mongoose.Schema({
-    nome: {
-        type: String,
-        require: true
-    },
-    posicao: {
-        type: String
-    }
-})
 
 const peladaSchema = new mongoose.Schema({
     nome: {
@@ -26,7 +12,7 @@ const peladaSchema = new mongoose.Schema({
         require: true
     },
     peladeiros: {
-        type: [peladeiroSchema]
+        type: [Peladeiro]
     }
 })
 

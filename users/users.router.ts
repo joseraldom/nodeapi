@@ -1,7 +1,5 @@
 import * as restify from 'restify'
-import { Router } from "../common/router";
 import { User } from './users.model';
-import { NotFoundError } from 'restify-errors';
 import { ModelRouter } from '../common/model-router';
 
 class UsersRouter extends ModelRouter<User> {
@@ -9,7 +7,7 @@ class UsersRouter extends ModelRouter<User> {
     constructor() {
         super(User)
     }
-    
+
     applyRoutes(application: restify.Server) {
         
         application.get('/users', this.findAll)
