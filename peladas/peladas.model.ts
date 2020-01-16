@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import { Peladeiro } from "../peladeiros/peladeiros.model"
+import { Peladeiro, peladeiroSchema } from "../peladeiros/peladeiros.model"
 
 export interface Pelada extends mongoose.Document {
     nome: String
@@ -12,7 +12,7 @@ const peladaSchema = new mongoose.Schema({
         require: true
     },
     peladeiros: {
-        type: [Peladeiro]
+        type: [peladeiroSchema]
     }
 })
 

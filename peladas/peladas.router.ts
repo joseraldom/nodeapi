@@ -9,13 +9,11 @@ class PeladaRouter extends ModelRouter<Pelada> {
     }
 
     applyRoutes(application: restify.Server) {
-
         application.get('/peladas', this.findAll)
         application.get('/peladas/:id', [this.validateId, this.findById])
         application.post('/peladas', [this.save])
         application.put('/peladas/:id', [this.validateId, this.update])
         application.del('/peladas/:id', [this.validateId, this.delete])
-
     }
 }
 

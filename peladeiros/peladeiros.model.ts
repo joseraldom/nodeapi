@@ -5,7 +5,7 @@ export interface Peladeiro extends mongoose.Document {
     posicao: String
 }
 
-const peladeiroSchema = new mongoose.Schema({
+export const peladeiroSchema = new mongoose.Schema({
     nome: {
         type: String,
         require: true
